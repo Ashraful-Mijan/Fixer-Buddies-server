@@ -90,15 +90,41 @@ client.connect(err => {
       })
   })
 
+  //read data using filter by email from mongodb
+  app.get('/userOrder', (req, res) => {
+    orderCollection.find({ email: req.query.email })
+      .toArray((err, items) => {
+        res.send(items)
+      })
+  })
+
   //read data using filter by id from mongodb
   app.get('/getOrderData/:id', (req, res) => {
     const id = ObjectID(req.params.id);
     servicesCollection.find({ _id: id })
-        .toArray((err, items) => {
-            res.send(items)
-            console.log(items);
-        })
-})
+      .toArray((err, items) => {
+        res.send(items)
+        console.log(items);
+      })
+  })
+
+  app.post('/loginBaseEmail', (req, res) => {
+    const date = req.body;
+    const email = req.body.email;
+    adminCollection.find({ email: email })
+      .toArray((err, admin) => {
+        if (admin.length === 0) {
+          orderCollection.find({ email: email })
+            .toArray((err, documents) => {
+              console.log(email, admin, documents)
+              res.send(documents);
+            })
+        }
+        else if (admin.length > 0) {
+          res.send(true)
+        }
+      })
+  })
 
 
 });
