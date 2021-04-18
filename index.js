@@ -82,6 +82,14 @@ client.connect(err => {
       })
   })
 
+  app.patch('/update', (req, res) => {
+    const order = req.body;
+    orderCollection.updateOne({ _id: ObjectID(req.body.id) },
+      { $set: {"status": req.body.status} }
+    )
+    .then(result => console.log(result))
+  })
+
   //read order
   app.get('/getOrder', (req, res) => {
     orderCollection.find({})
@@ -111,11 +119,11 @@ client.connect(err => {
   app.delete('/deleteService/:id', (req, res) => {
     console.log(req.params.id)
     servicesCollection.deleteOne({ _id: ObjectID(req.params.id) })
-    .then(result => {
+      .then(result => {
         console.log(result);
         res.send(result.deletedCount > 0)
-    })
-})
+      })
+  })
 
   app.post('/loginBaseEmail', (req, res) => {
     const email = req.body.email;
