@@ -108,23 +108,23 @@ client.connect(err => {
       })
   })
 
+  app.delete('/deleteService/:id', (req, res) => {
+    console.log(req.params.id)
+    servicesCollection.deleteOne({ _id: ObjectID(req.params.id) })
+    .then(result => {
+        console.log(result);
+        res.send(result.deletedCount > 0)
+    })
+})
+
   app.post('/loginBaseEmail', (req, res) => {
-    const date = req.body;
     const email = req.body.email;
     adminCollection.find({ email: email })
       .toArray((err, admin) => {
-        if (admin.length === 0) {
-          orderCollection.find({ email: email })
-            .toArray((err, documents) => {
-              console.log(email, admin, documents)
-              res.send(documents);
-            })
-        }
-        else if (admin.length > 0) {
-          res.send(true)
-        }
+        res.send(admin.length > 0)
       })
   })
+
 
 
 });
